@@ -28,7 +28,7 @@ class RedisConfig:
     password: str
     host: str
     port: int
-    database: str
+    database: int
 
 
 @dataclass
@@ -58,4 +58,4 @@ def load_config() -> Config:
                                     password=env('REDIS_PASSWORD'),
                                     host=env('REDIS_HOST'),
                                     port=int(env('REDIS_PORT')),
-                                    database=env('REDIS_DB')))
+                                    database=int(env('REDIS_DB'))))
