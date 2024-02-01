@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from database import User
-from errors import DataError
+from errors import DatabaseError
 
 
 async def create_user(user_id: str, sessionmaker: async_sessionmaker[AsyncSession]) -> None:
@@ -16,7 +16,7 @@ async def create_user(user_id: str, sessionmaker: async_sessionmaker[AsyncSessio
                 session.add(user)
             except:
                 await session.rollback()
-                raise DataError
+                raise DatabaseError
 
 
 async def get_user(user_id: str, sessionmaker: async_sessionmaker[AsyncSession]) -> User:
@@ -31,7 +31,7 @@ async def get_user(user_id: str, sessionmaker: async_sessionmaker[AsyncSession])
                 return user
             except:
                 await session.rollback()
-                raise DataError
+                raise DatabaseError
 
 
 async def update_rating(user_id: str, add_rating: int, sessionmaker: async_sessionmaker[AsyncSession]) -> None:
@@ -46,4 +46,4 @@ async def update_rating(user_id: str, add_rating: int, sessionmaker: async_sessi
                 user.rating += add_rating
             except:
                 await session.rollback()
-                raise DataError
+                raise DatabaseError

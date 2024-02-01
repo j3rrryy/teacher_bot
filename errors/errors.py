@@ -1,5 +1,5 @@
 from vkbottle import CodeException
 
 
-class DataError(CodeException):
+class DatabaseError(CodeException):
     pass

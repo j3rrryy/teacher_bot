@@ -33,5 +33,5 @@ services:
     env_file:
       - .env
     command:
-      - redis-server
+      - redis-server --requirepass $$REDIS_PASSWORD
     container_name: redis_bot
