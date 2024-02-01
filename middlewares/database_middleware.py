@@ -18,4 +18,5 @@ class DatabaseMiddleware(BaseMiddleware[Message]):
         self.redis: Redis = get_redis_client()
 
     async def pre(self):
-        ...
+        self.event.__dict__['postgres'] = self.postgres
+        self.event.__dict__['redis'] = self.redis

@@ -1,11 +1,10 @@
 from vkbottle.bot import BotLabeler, Message
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from lexicon import LEXICON_RU, KB_LEXICON_RU, ERROR_LEXICON_RU
 from middlewares import DatabaseMiddleware
-from states import GameStates
-from services import heads_or_tails_game
+from services import heads_or_tails_game, math_game
 from keyboards import *
+from database import *
 
 
 user_labeler: BotLabeler = BotLabeler()
@@ -14,6 +13,7 @@ user_labeler.message_view.register_middleware(DatabaseMiddleware)
 
 @user_labeler.private_message(text='Начать')
 async def start(message: Message):
+    await create_user(message.from_id, message.__dict__['postgres'])
     await message.answer(LEXICON_RU['start'], keyboard=to_menu_kb().get_json())
 
 
@@ -34,18 +34,47 @@ async def games(message: Message):
 
 @user_labeler.private_message(text=KB_LEXICON_RU['profile'])
 async def profile(message: Message):
-    await message.answer(LEXICON_RU['profile'])
+    profile = await get_user(message.from_id, message.__dict__['postgres'])
+
+    rating = LEXICON_RU['rating'] + str(profile.rating) + '\n'
+    registered = LEXICON_RU['registered'] + \
+        profile.registered.strftime('%d.%m.%Y')
+
+    await message.answer(LEXICON_RU['profile'] + rating + registered)
 
 
 @user_labeler.private_message(text=KB_LEXICON_RU['coin'])
 @user_labeler.private_message(payload={'game_type': 0})
-async def coin(message: Message):
+async def heads_or_tails(message: Message):
     await message.answer(LEXICON_RU['choose'], keyboard=heads_or_tails_kb().get_json())
 
 
 @user_labeler.private_message(text=[KB_LEXICON_RU['heads'], KB_LEXICON_RU['tails']])
 async def heads_or_tails_res(message: Message):
     if heads_or_tails_game(message.text)[0]:
-        await message.answer(LEXICON_RU['win'], keyboard=play_again_kb().get_json())
+        new_rating = (await update_rating(message.from_id, 10, message.__dict__['postgres'])).rating
+        await message.answer(LEXICON_RU['win'] + str(new_rating), keyboard=play_again_kb(0).get_json())
+
     else:
-        await message.answer(LEXICON_RU['lose'], keyboard=play_again_kb().get_json())
+        new_rating = (await update_rating(message.from_id, -10, message.__dict__['postgres'])).rating
+        await message.answer(LEXICON_RU['lose'] + str(new_rating), keyboard=play_again_kb(0).get_json())
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['solve'])
+@user_labeler.private_message(payload={'game_type': 1})
+async def solve_equation(message: Message):
+    eq = math_game()
+
+    await message.answer(LEXICON_RU['solve'] + eq[0], keyboard=choose_answer(eq[1]).get_json())
+
+
+@user_labeler.private_message(payload={'correct': True})
+async def solve_equation_res_1(message: Message):
+    new_rating = (await update_rating(message.from_id, 10, message.__dict__['postgres'])).rating
+    await message.answer(LEXICON_RU['correct'] + str(new_rating), keyboard=play_again_kb(1).get_json())
+
+
+@user_labeler.private_message(payload={'correct': False})
+async def solve_equation_res_2(message: Message):
+    new_rating = (await update_rating(message.from_id, -10, message.__dict__['postgres'])).rating
+    await message.answer(LEXICON_RU['wrong'] + str(new_rating), keyboard=play_again_kb(1).get_json())

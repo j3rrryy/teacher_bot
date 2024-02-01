@@ -23,7 +23,8 @@ def get_postgres_sessionmaker() -> async_sessionmaker[AsyncSession]:
     )
 
     async_engine = create_async_engine(url=postgres_url, pool_pre_ping=True)
-    session_maker = async_sessionmaker(bind=async_engine, class_=AsyncSession)
+    session_maker = async_sessionmaker(
+        bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
     return session_maker
 
