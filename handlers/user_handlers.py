@@ -15,7 +15,8 @@ user_labeler.message_view.register_middleware(DatabaseMiddleware)
 async def start(message: Message):
     try:
         await create_user(message.from_id, message.__dict__['postgres'])
-        await message.answer(LEXICON_RU['start'], keyboard=to_menu_kb().get_json())
+        await message.answer(f'Привет, {(await message.get_user()).first_name}👋' + LEXICON_RU['start'],
+                             keyboard=to_menu_kb().get_json())
     except DatabaseError:
         await message.answer(ERROR_LEXICON_RU['database_error'], keyboard=to_menu_kb().get_json())
 
