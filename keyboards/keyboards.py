@@ -1,4 +1,4 @@
-from random import shuffle, randint
+import random
 
 from vkbottle import Keyboard, KeyboardButtonColor, Text
 
@@ -80,10 +80,10 @@ def heads_or_tails_kb() -> Keyboard:
 
 def choose_answer(correct: int) -> Keyboard:
     answrs = [correct,
-              randint(correct - 50, correct + 50),
-              randint(correct - 50, correct + 50),
-              randint(correct - 50, correct + 50)]
-    shuffle(answrs)
+              random.randint(correct - 50, correct + 50),
+              random.randint(correct - 50, correct + 50),
+              random.randint(correct - 50, correct + 50)]
+    random.shuffle(answrs)
 
     kb = (
         Keyboard(inline=True)
