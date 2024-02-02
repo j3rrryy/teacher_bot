@@ -59,10 +59,10 @@ def subjects_kb() -> Keyboard:
 def games_kb() -> Keyboard:
     kb = (
         Keyboard(inline=True)
-        .add(Text(KB_LEXICON_RU['solve']),
+        .add(Text(KB_LEXICON_RU['coin']),
              color=KeyboardButtonColor.SECONDARY)
         .row()
-        .add(Text(KB_LEXICON_RU['coin']),
+        .add(Text(KB_LEXICON_RU['solve']),
              color=KeyboardButtonColor.SECONDARY)
     )
 

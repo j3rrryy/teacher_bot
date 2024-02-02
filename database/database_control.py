@@ -15,9 +15,9 @@ async def create_user(user_id: int, sessionmaker: async_sessionmaker[AsyncSessio
             try:
                 user = User(user_id=user_id)
                 session.add(user)
-            except:
+            except Exception as e:
                 await session.rollback()
-                raise DatabaseError
+                raise DatabaseError from e
 
 
 async def get_user(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) -> User:
@@ -30,9 +30,9 @@ async def get_user(user_id: int, sessionmaker: async_sessionmaker[AsyncSession])
             try:
                 user = await session.get(User, user_id)
                 return user
-            except:
+            except Exception as e:
                 await session.rollback()
-                raise DatabaseError
+                raise DatabaseError from e
 
 
 async def update_rating(user_id: int, add_rating: int, sessionmaker: async_sessionmaker[AsyncSession]) -> User:
@@ -49,24 +49,24 @@ async def update_rating(user_id: int, add_rating: int, sessionmaker: async_sessi
                 else:
                     user.rating += add_rating
                 return user
-            except:
+            except Exception as e:
                 await session.rollback()
-                raise DatabaseError
+                raise DatabaseError from e
 
 
-# async def get_top(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) -> int:
-#     '''
-#     Get user rating position
-#     '''
+async def get_top(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) -> int:
+    '''
+    Get user rating position
+    '''
 
-#     async with sessionmaker() as session:
-#         async with session.begin():
-#             try:
-#                 user_rating = (await session.execute(select(User).where(User.user_id == user_id))).scalar()
-#                 higher_ratings = (await session.execute(select(func.count()).where(User.rating > user_rating))).scalar()
-#                 user_pos = higher_ratings + 1
+    async with sessionmaker() as session:
+        async with session.begin():
+            try:
+                user_rating = (await session.get(User, user_id)).rating
+                higher_ratings = (await session.execute(select(func.count()).where(User.rating > user_rating))).scalar()
+                user_pos = higher_ratings + 1
 
-#                 return user_pos
-#             except:
-#                 await session.rollback()
-#                 raise DatabaseError
+                return user_pos
+            except Exception as e:
+                await session.rollback()
+                raise DatabaseError from e

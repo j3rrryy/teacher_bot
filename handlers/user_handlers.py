@@ -44,12 +44,11 @@ async def profile(message: Message):
         profile = await get_user(message.from_id, message.__dict__['postgres'])
 
         rating = LEXICON_RU['rating'] + str(profile.rating) + '\n'
+        position = LEXICON_RU['position'] + str(await get_top(message.from_id, message.__dict__['postgres'])) + '\n\n'
         registered = LEXICON_RU['registered'] + \
             profile.registered.strftime('%d.%m.%Y')
-        # position = LEXICON_RU['position'] + str(await get_top(message.from_id, message.__dict__['postgres']))
 
-        await message.answer(LEXICON_RU['profile'] + rating + registered)
-        # await message.answer(str(await get_top(message.from_id, message.__dict__['postgres'])))
+        await message.answer(LEXICON_RU['profile'] + rating + position + registered)
     except DatabaseError:
         await message.answer(ERROR_LEXICON_RU['database_error'])
 
