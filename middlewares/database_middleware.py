@@ -1,9 +1,8 @@
-from redis.asyncio import Redis
 from vkbottle import BaseMiddleware
 from vkbottle.bot import Message
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from database import get_postgres_sessionmaker, get_redis_client
+from database import get_postgres_sessionmaker
 
 
 class DatabaseMiddleware(BaseMiddleware[Message]):
@@ -15,8 +14,6 @@ class DatabaseMiddleware(BaseMiddleware[Message]):
         super().__init__(event, view)
         self.postgres: async_sessionmaker[AsyncSession] = get_postgres_sessionmaker(
         )
-        self.redis: Redis = get_redis_client()
 
     async def pre(self):
         self.event.__dict__['postgres'] = self.postgres
-        self.event.__dict__['redis'] = self.redis

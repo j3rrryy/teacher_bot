@@ -1,4 +1,3 @@
-from redis.asyncio import Redis, from_url
 from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -27,19 +26,3 @@ def get_postgres_sessionmaker() -> async_sessionmaker[AsyncSession]:
         bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
     return session_maker
-
-
-def get_redis_client() -> Redis:
-    '''
-    Configure the redis connection
-    '''
-
-    config: Config = load_config()
-
-    redis = from_url(
-        f'{config.redis.driver}://{config.redis.user}:{config.redis.password}@{config.redis.host}:{config.redis.port}/{config.redis.database}',
-        encoding='utf8',
-        decode_responses=True
-    )
-
-    return redis

@@ -89,11 +89,11 @@ def choose_answer(correct: int) -> Keyboard:
         Keyboard(inline=True)
         .add(Text(str(answrs[0]), payload={'correct': correct == answrs[0]}),
              color=KeyboardButtonColor.SECONDARY)
-        .add(Text(str(answrs[1]), payload={'correct': correct == answrs[0]}),
+        .add(Text(str(answrs[1]), payload={'correct': correct == answrs[1]}),
              color=KeyboardButtonColor.SECONDARY)
-        .add(Text(str(answrs[2]), payload={'correct': correct == answrs[0]}),
+        .add(Text(str(answrs[2]), payload={'correct': correct == answrs[2]}),
              color=KeyboardButtonColor.SECONDARY)
-        .add(Text(str(answrs[3]), payload={'correct': correct == answrs[0]}),
+        .add(Text(str(answrs[3]), payload={'correct': correct == answrs[3]}),
              color=KeyboardButtonColor.SECONDARY)
     )
 

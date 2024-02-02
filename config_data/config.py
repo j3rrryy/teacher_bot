@@ -22,20 +22,9 @@ class PostgresConfig:
 
 
 @dataclass
-class RedisConfig:
-    driver: str
-    user: str
-    password: str
-    host: str
-    port: int
-    database: int
-
-
-@dataclass
 class Config:
     vk_bot: VkBot
     postgres: PostgresConfig
-    redis: RedisConfig
 
 
 def load_config() -> Config:
@@ -52,10 +41,4 @@ def load_config() -> Config:
                                           password=env('POSTGRES_PASSWORD'),
                                           host=env('POSTGRES_HOST'),
                                           port=int(env('POSTGRES_PORT')),
-                                          database=env('POSTGRES_DB')),
-                  redis=RedisConfig(driver=env('REDIS_DRIVER'),
-                                    user=env('REDIS_USER'),
-                                    password=env('REDIS_PASSWORD'),
-                                    host=env('REDIS_HOST'),
-                                    port=int(env('REDIS_PORT')),
-                                    database=int(env('REDIS_DB'))))
+                                          database=env('POSTGRES_DB')))
