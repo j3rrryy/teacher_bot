@@ -25,6 +25,9 @@ def menu_kb() -> Keyboard:
              color=KeyboardButtonColor.SECONDARY)
         .row()
         .add(Text(KB_LEXICON_RU['profile']),
+             color=KeyboardButtonColor.SECONDARY)
+        .row()
+        .add(Text(KB_LEXICON_RU['info']),
              color=KeyboardButtonColor.PRIMARY)
     )
 

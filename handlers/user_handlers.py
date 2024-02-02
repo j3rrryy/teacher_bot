@@ -49,6 +49,11 @@ async def profile(message: Message):
         await message.answer(ERROR_LEXICON_RU['database_error'])
 
 
+@user_labeler.private_message(text=KB_LEXICON_RU['info'])
+async def info(message: Message):
+    await message.answer(LEXICON_RU['info'])
+
+
 @user_labeler.private_message(text=KB_LEXICON_RU['coin'])
 @user_labeler.private_message(payload={'game_type': 0})
 async def heads_or_tails(message: Message):
