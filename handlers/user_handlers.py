@@ -3,9 +3,9 @@ from vkbottle.bot import BotLabeler, Message
 from lexicon import LEXICON_RU, KB_LEXICON_RU, ERROR_LEXICON_RU
 from middlewares import DatabaseMiddleware
 from services import heads_or_tails_game, math_game
+from external_services.subject_service import get_material
 from keyboards import *
 from database import *
-
 
 user_labeler: BotLabeler = BotLabeler()
 user_labeler.message_view.register_middleware(DatabaseMiddleware)
@@ -14,7 +14,7 @@ user_labeler.message_view.register_middleware(DatabaseMiddleware)
 @user_labeler.private_message(text='Начать')
 async def start(message: Message):
     try:
-        if not (await get_user(message.from_id, message.__dict__['postgres']))
+        if not (await get_user(message.from_id, message.__dict__['postgres'])):
             await create_user(message.from_id, message.__dict__['postgres'])
 
         await message.answer(f'Привет, {(await message.get_user()).first_name}👋' + LEXICON_RU['start'],
@@ -45,7 +45,7 @@ async def profile(message: Message):
 
         rating = LEXICON_RU['rating'] + str(profile.rating) + '\n'
         registered = LEXICON_RU['registered'] + \
-            profile.registered.strftime('%d.%m.%Y')
+                     profile.registered.strftime('%d.%m.%Y')
 
         await message.answer(LEXICON_RU['profile'] + rating + registered)
     except DatabaseError:
@@ -101,3 +101,33 @@ async def solve_equation_res_2(message: Message):
         await message.answer(LEXICON_RU['wrong'] + str(new_rating), keyboard=play_again_kb(1).get_json())
     except DatabaseError:
         await message.answer(ERROR_LEXICON_RU['database_error'])
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['lit'])
+async def get_lit(message: Message):
+    await message.answer(get_material('lit'))
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['rus'])
+async def get_rus(message: Message):
+    await message.answer(get_material('rus'))
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['phys'])
+async def get_phys(message: Message):
+    await message.answer(get_material('phys'))
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['maths'])
+async def get_maths(message: Message):
+    await message.answer(get_material('maths'))
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['chem'])
+async def get_chem(message: Message):
+    await message.answer(get_material('chem'))
+
+
+@user_labeler.private_message(text=KB_LEXICON_RU['it'])
+async def get_it(message: Message):
+    await message.answer(get_material('it'))
