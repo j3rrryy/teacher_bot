@@ -14,10 +14,10 @@ user_labeler.message_view.register_middleware(DatabaseMiddleware)
 @user_labeler.private_message(text='Начать')
 async def start(message: Message):
     try:
-        if not (await get_user(message.from_id, message.__dict__['postgres']))
+        if not (await get_user(message.from_id, message.__dict__['postgres'])):
             await create_user(message.from_id, message.__dict__['postgres'])
 
-        await message.answer(f'Привет, {(await message.get_user()).first_name}👋' + LEXICON_RU['start'],
+        await message.answer(f'Привет, {(await message.get_user()).first_name}👋\n\n' + LEXICON_RU['start'],
                              keyboard=to_menu_kb().get_json())
     except DatabaseError:
         await message.answer(ERROR_LEXICON_RU['database_error'], keyboard=to_menu_kb().get_json())
@@ -46,8 +46,10 @@ async def profile(message: Message):
         rating = LEXICON_RU['rating'] + str(profile.rating) + '\n'
         registered = LEXICON_RU['registered'] + \
             profile.registered.strftime('%d.%m.%Y')
+        # position = LEXICON_RU['position'] + str(await get_top(message.from_id, message.__dict__['postgres']))
 
         await message.answer(LEXICON_RU['profile'] + rating + registered)
+        # await message.answer(str(await get_top(message.from_id, message.__dict__['postgres'])))
     except DatabaseError:
         await message.answer(ERROR_LEXICON_RU['database_error'])
 

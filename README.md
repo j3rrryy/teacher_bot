@@ -2,8 +2,10 @@
 
 ## :book: Key features
 
-- Uses Redis and PostgreSQL
+- Uses PostgreSQL
 - Uses Russian language to communicate
+- Has a big collection of useful educational materials
+- Has a few games with rating system
 
 ## :computer: Requirements
 
