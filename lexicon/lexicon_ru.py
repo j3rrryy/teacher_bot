@@ -34,5 +34,5 @@ KB_LEXICON_RU: dict[str, str] = {
 }
 
 ERROR_LEXICON_RU: dict[str, str] = {
-
+    'database_error': 'Ошибка в базе данных. Повторите попытку позже'
 }

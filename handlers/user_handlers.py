@@ -13,8 +13,11 @@ user_labeler.message_view.register_middleware(DatabaseMiddleware)
 
 @user_labeler.private_message(text='Начать')
 async def start(message: Message):
-    await create_user(message.from_id, message.__dict__['postgres'])
-    await message.answer(LEXICON_RU['start'], keyboard=to_menu_kb().get_json())
+    try:
+        await create_user(message.from_id, message.__dict__['postgres'])
+        await message.answer(LEXICON_RU['start'], keyboard=to_menu_kb().get_json())
+    except DatabaseError:
+        await message.answer(ERROR_LEXICON_RU['database_error'], keyboard=to_menu_kb().get_json())
 
 
 @user_labeler.private_message(text=KB_LEXICON_RU['menu'])
@@ -34,13 +37,16 @@ async def games(message: Message):
 
 @user_labeler.private_message(text=KB_LEXICON_RU['profile'])
 async def profile(message: Message):
-    profile = await get_user(message.from_id, message.__dict__['postgres'])
+    try:
+        profile = await get_user(message.from_id, message.__dict__['postgres'])
 
-    rating = LEXICON_RU['rating'] + str(profile.rating) + '\n'
-    registered = LEXICON_RU['registered'] + \
-        profile.registered.strftime('%d.%m.%Y')
+        rating = LEXICON_RU['rating'] + str(profile.rating) + '\n'
+        registered = LEXICON_RU['registered'] + \
+            profile.registered.strftime('%d.%m.%Y')
 
-    await message.answer(LEXICON_RU['profile'] + rating + registered)
+        await message.answer(LEXICON_RU['profile'] + rating + registered)
+    except DatabaseError:
+        await message.answer(ERROR_LEXICON_RU['database_error'])
 
 
 @user_labeler.private_message(text=KB_LEXICON_RU['coin'])
@@ -51,13 +57,16 @@ async def heads_or_tails(message: Message):
 
 @user_labeler.private_message(text=[KB_LEXICON_RU['heads'], KB_LEXICON_RU['tails']])
 async def heads_or_tails_res(message: Message):
-    if heads_or_tails_game(message.text)[0]:
-        new_rating = (await update_rating(message.from_id, 10, message.__dict__['postgres'])).rating
-        await message.answer(LEXICON_RU['win'] + str(new_rating), keyboard=play_again_kb(0).get_json())
+    try:
+        if heads_or_tails_game(message.text)[0]:
+            new_rating = (await update_rating(message.from_id, 10, message.__dict__['postgres'])).rating
+            await message.answer(LEXICON_RU['win'] + str(new_rating), keyboard=play_again_kb(0).get_json())
 
-    else:
-        new_rating = (await update_rating(message.from_id, -10, message.__dict__['postgres'])).rating
-        await message.answer(LEXICON_RU['lose'] + str(new_rating), keyboard=play_again_kb(0).get_json())
+        else:
+            new_rating = (await update_rating(message.from_id, -10, message.__dict__['postgres'])).rating
+            await message.answer(LEXICON_RU['lose'] + str(new_rating), keyboard=play_again_kb(0).get_json())
+    except DatabaseError:
+        await message.answer(ERROR_LEXICON_RU['database_error'])
 
 
 @user_labeler.private_message(text=KB_LEXICON_RU['solve'])
@@ -70,11 +79,17 @@ async def solve_equation(message: Message):
 
 @user_labeler.private_message(payload={'correct': True})
 async def solve_equation_res_1(message: Message):
-    new_rating = (await update_rating(message.from_id, 10, message.__dict__['postgres'])).rating
-    await message.answer(LEXICON_RU['correct'] + str(new_rating), keyboard=play_again_kb(1).get_json())
+    try:
+        new_rating = (await update_rating(message.from_id, 10, message.__dict__['postgres'])).rating
+        await message.answer(LEXICON_RU['correct'] + str(new_rating), keyboard=play_again_kb(1).get_json())
+    except DatabaseError:
+        await message.answer(ERROR_LEXICON_RU['database_error'])
 
 
 @user_labeler.private_message(payload={'correct': False})
 async def solve_equation_res_2(message: Message):
-    new_rating = (await update_rating(message.from_id, -10, message.__dict__['postgres'])).rating
-    await message.answer(LEXICON_RU['wrong'] + str(new_rating), keyboard=play_again_kb(1).get_json())
+    try:
+        new_rating = (await update_rating(message.from_id, -10, message.__dict__['postgres'])).rating
+        await message.answer(LEXICON_RU['wrong'] + str(new_rating), keyboard=play_again_kb(1).get_json())
+    except DatabaseError:
+        await message.answer(ERROR_LEXICON_RU['database_error'])
