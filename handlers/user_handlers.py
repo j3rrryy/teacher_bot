@@ -14,7 +14,9 @@ user_labeler.message_view.register_middleware(DatabaseMiddleware)
 @user_labeler.private_message(text='Начать')
 async def start(message: Message):
     try:
-        await create_user(message.from_id, message.__dict__['postgres'])
+        if not (await get_user(message.from_id, message.__dict__['postgres']))
+            await create_user(message.from_id, message.__dict__['postgres'])
+
         await message.answer(f'Привет, {(await message.get_user()).first_name}👋' + LEXICON_RU['start'],
                              keyboard=to_menu_kb().get_json())
     except DatabaseError:
