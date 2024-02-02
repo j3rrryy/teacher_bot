@@ -15,7 +15,7 @@ services:
       - .env
     depends_on:
       - postgres
-    container_name: shaylushay_bot
+    container_name: teacher_bot
 
   postgres:
     image: postgres:alpine
