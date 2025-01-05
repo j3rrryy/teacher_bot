@@ -1,3 +1,5 @@
+import logging
+
 from vkbottle.bot import BotLabeler, Message
 
 from src.database import create_user, get_top, get_user, update_rating
@@ -16,6 +18,7 @@ from src.lexicon import ERROR_LEXICON_RU, KB_LEXICON_RU, LEXICON_RU
 from src.middlewares import DatabaseMiddleware
 from src.services import heads_or_tails_game, math_game
 
+logger = logging.getLogger()
 user_labeler = BotLabeler()
 user_labeler.message_view.register_middleware(DatabaseMiddleware)
 
@@ -31,7 +34,8 @@ async def start(message: Message):
             + LEXICON_RU["start"],
             keyboard=to_menu_kb().get_json(),
         )
-    except DatabaseError:
+    except DatabaseError as e:
+        logger.exception(e)
         await message.answer(
             ERROR_LEXICON_RU["database_error"], keyboard=to_menu_kb().get_json()
         )
@@ -68,7 +72,8 @@ async def profile(message: Message):
         )
 
         await message.answer(LEXICON_RU["profile"] + rating + position + registered)
-    except DatabaseError:
+    except DatabaseError as e:
+        logger.exception(e)
         await message.answer(ERROR_LEXICON_RU["database_error"])
 
 
@@ -103,7 +108,8 @@ async def heads_or_tails_res(message: Message):
                 LEXICON_RU["lose"] + str(new_rating),
                 keyboard=play_again_kb(0).get_json(),
             )
-    except DatabaseError:
+    except DatabaseError as e:
+        logger.exception(e)
         await message.answer(ERROR_LEXICON_RU["database_error"])
 
 
@@ -111,7 +117,6 @@ async def heads_or_tails_res(message: Message):
 @user_labeler.private_message(payload={"game_type": 1})
 async def solve_equation(message: Message):
     eq = math_game()
-
     await message.answer(
         LEXICON_RU["solve"] + eq[0], keyboard=choose_answer(eq[1]).get_json()
     )
@@ -127,7 +132,8 @@ async def solve_equation_res_1(message: Message):
             LEXICON_RU["correct"] + str(new_rating),
             keyboard=play_again_kb(1).get_json(),
         )
-    except DatabaseError:
+    except DatabaseError as e:
+        logger.exception(e)
         await message.answer(ERROR_LEXICON_RU["database_error"])
 
 
@@ -140,7 +146,8 @@ async def solve_equation_res_2(message: Message):
         await message.answer(
             LEXICON_RU["wrong"] + str(new_rating), keyboard=play_again_kb(1).get_json()
         )
-    except DatabaseError:
+    except DatabaseError as e:
+        logger.exception(e)
         await message.answer(ERROR_LEXICON_RU["database_error"])
 
 

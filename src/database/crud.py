@@ -38,7 +38,6 @@ async def get_user(
                 user = await session.get(User, user_id)
                 return user.columns_to_dict()
             except Exception as e:
-                await session.rollback()
                 raise DatabaseError from e
 
 
@@ -80,5 +79,4 @@ async def get_top(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) 
                 user_pos = higher_ratings + 1
                 return user_pos
             except Exception as e:
-                await session.rollback()
                 raise DatabaseError from e
