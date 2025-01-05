@@ -3,35 +3,31 @@ import logging
 
 from vkbottle.bot import Bot, BotLabeler
 
-from config_data import load_config, Config
-from handlers import user_labeler
-
+from src.config import load_config
+from src.handlers import user_labeler
 
 logger = logging.getLogger(__name__)
 
 
-async def main() -> None:
-
+async def main():
     logging.basicConfig(
         level=logging.INFO,
-        format='%(filename)s:%(lineno)d #%(levelname)-8s '
-               '[%(asctime)s] - %(name)s - %(message)s')
+        format="%(asctime)s | %(levelname)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        force=True,
+    )
+    logger.info("Starting bot")
 
-    logger.info('Starting bot')
-
-    config: Config = load_config()
-
-    labeler: BotLabeler = BotLabeler()
+    config = load_config()
+    labeler = BotLabeler()
     labeler.load(user_labeler)
 
-    bot: Bot = Bot(token=config.vk_bot.token, labeler=labeler)
-
+    bot = Bot(token=config.bot.token, labeler=labeler)
     await bot.run_polling()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except Exception as e:
-        logger.error('Bot stopped!')
-        print(e)
+        logger.exception(e)

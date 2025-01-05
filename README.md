@@ -1,5 +1,18 @@
 # Teacher bot
 
+<p align="center">
+  <img src="https://github.com/j3rrryy/teacher_bot/actions/workflows/main.yml/badge.svg">
+  <a href="https://www.python.org/downloads/release/python-3120/">
+    <img src="https://img.shields.io/badge/Python-3.12-FFD64E.svg" alt="Python 3.12">
+  </a>
+  <a href="https://github.com/j3rrryy/teacher_bot/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License">
+  </a>
+  <a href="https://github.com/astral-sh/ruff">
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff">
+  </a>
+</p>
+
 ## :book: Key features
 
 - Uses PostgreSQL

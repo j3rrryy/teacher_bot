@@ -6,13 +6,11 @@ services:
   bot:
     build: .
     restart: always
-    command: bash -c "alembic upgrade head && python bot.py"
-    ports:
-      - 8080:8080
     env_file:
       - .env
     depends_on:
       - postgres
+    command: bash -c "alembic -c "./src/config/alembic.ini" upgrade head && python ./bot.py"
     container_name: teacher_bot
 
   postgres:
