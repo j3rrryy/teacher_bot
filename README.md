@@ -40,3 +40,5 @@ docker compose up --build -d
 ```shell
 docker compose stop
 ```
+
+### :email: DM [Шалушай-team](https://vk.com/club224511802) in VK
