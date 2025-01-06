@@ -15,7 +15,6 @@
 
 ## :book: Key features
 
-- Fully asynchronous
 - Main DB - PostgreSQL
 - Uses Russian language to communicate
 - Has a big collection of useful educational materials
